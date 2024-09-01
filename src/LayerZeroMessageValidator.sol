@@ -82,6 +82,17 @@ contract LayerZeroMessageValidator is IValidator, OApp {
         }
     }
 
+    function quote(CrossChainCall[] calldata calls) external view returns (MessagingFee[] memory) {
+        MessagingFee[] memory fees = new MessagingFee[](calls.length);
+        for (uint256 i = 0; i < calls.length; i++) {
+            fees[i] = _quote(
+                calls[i].dstEid, abi.encode(calls[i].target, msg.sender, calls[i].calldata_), calls[i].option, false
+            );
+        }
+
+        return fees;
+    }
+
     function _lzReceive(Origin calldata origin, bytes32, bytes calldata _message, address, bytes calldata)
         internal
         override
@@ -96,6 +107,4 @@ contract LayerZeroMessageValidator is IValidator, OApp {
 
         approvedOps[target][keccak256(cd)] = true;
     }
-
-    function hashOrigin(Origin calldata origin) public pure returns (bytes32) {}
 }
