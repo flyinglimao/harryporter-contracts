@@ -11,8 +11,9 @@ contract LayerZeroMessageValidatorScript is Script {
 
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
+        address addr = vm.createWallet(privateKey).addr;
         vm.startBroadcast(privateKey);
-        validator = new LayerZeroMessageValidator(0x6EDCE65403992e310A62460808c4b910D972f10f, msg.sender);
+        validator = new LayerZeroMessageValidator(0x6EDCE65403992e310A62460808c4b910D972f10f, addr);
         vm.stopBroadcast();
     }
 }
