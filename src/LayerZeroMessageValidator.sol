@@ -30,7 +30,7 @@ contract LayerZeroMessageValidator is IValidator, OApp {
     constructor(address _endpoint, address _owner) OApp(_endpoint, _owner) Ownable(_owner) {}
 
     function setConfig(SrcEid srcEid, Sender sender, Spender[] calldata spenders, bool[] calldata approve) external {
-        require(spenders.length == approve.length, "HarryPorter: invalid input length");
+        require(spenders.length == approve.length, "LayerZeroMessageValidator: invalid input length");
 
         for (uint256 i = 0; i < spenders.length; i++) {
             originConfigs[msg.sender][srcEid][sender][spenders[i]] = approve[i];
@@ -102,9 +102,10 @@ contract LayerZeroMessageValidator is IValidator, OApp {
         require(
             originConfigs[target][SrcEid.wrap(origin.srcEid)][Sender.wrap(address(uint160(uint256(origin.sender))))][Spender
                 .wrap(spender)],
-            "HarryPorter: invalid spender"
+            "LayerZeroMessageValidator: invalid spender"
         );
 
+        emit ApproveOp(target, keccak256(cd), cd);
         approvedOps[target][keccak256(cd)] = true;
     }
 }
